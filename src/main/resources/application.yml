@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: user-service
+  datasource:
+    driver-class-name: com.postgresql.jdbc.Driver
