@@ -4,6 +4,7 @@ import com.murat.userservice.payloads.ResponseDto;
 import com.murat.userservice.payloads.UserReqDto;
 import com.murat.userservice.payloads.UserResDto;
 import com.murat.userservice.services.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseDto registerUser(@RequestBody UserReqDto userReqDto) {
+    public ResponseDto registerUser(@RequestBody @Valid UserReqDto userReqDto) {
         return userService.createUser(userReqDto);
     }
 
@@ -37,7 +38,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDto updateUser(@PathVariable long userId, @RequestBody UserReqDto userReqDto) {
+    public ResponseDto updateUser(@PathVariable long userId, @RequestBody @Valid UserReqDto userReqDto) {
         return userService.updateUser(userId, userReqDto);
     }
 
