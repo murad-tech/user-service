@@ -21,6 +21,8 @@ Below command will run docker compose which will create docker container based o
 > This is dynamic programming 😎
 
 ```shell
+docker compose --env-file .dev.env up -d
+# or if you use .env file
 docker compose up -d
 ```
 
