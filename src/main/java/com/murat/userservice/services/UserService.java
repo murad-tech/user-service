@@ -1,6 +1,7 @@
 package com.murat.userservice.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.murat.userservice.payloads.LoginReqDto;
 import com.murat.userservice.payloads.ResponseDto;
 import com.murat.userservice.payloads.UserReqDto;
 import com.murat.userservice.payloads.UserResDto;
@@ -8,6 +9,7 @@ import com.murat.userservice.entities.User;
 import com.murat.userservice.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,13 +20,14 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     ObjectMapper mapper = new ObjectMapper();
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public ResponseDto createUser(UserReqDto userReqDTO) {
+    public ResponseDto createUser(UserReqDto userReqDto) {
         User user = User.builder()
-                .name(userReqDTO.name())
-                .email(userReqDTO.email())
-                .password(userReqDTO.password())
-                .role(userReqDTO.role())
+                .name(userReqDto.name())
+                .email(userReqDto.email())
+                .password(encoder.encode(userReqDto.password()))
+                .role(userReqDto.role())
                 .build();
 
         long userId = userRepository.save(user).getId();
@@ -47,7 +50,7 @@ public class UserService {
 
         if (userReqDto.name() != null) user.get().setName(userReqDto.name());
         if (userReqDto.email() != null) user.get().setEmail(userReqDto.email());
-        if (userReqDto.password() != null) user.get().setPassword(userReqDto.password());
+        if (userReqDto.password() != null) user.get().setPassword(encoder.encode(userReqDto.password()));
         if (userReqDto.role() != null) user.get().setRole(userReqDto.role());
         userRepository.save(user.get());
 

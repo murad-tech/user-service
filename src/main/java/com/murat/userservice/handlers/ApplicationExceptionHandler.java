@@ -1,6 +1,9 @@
 package com.murat.userservice.handlers;
 
+import com.murat.userservice.exceptions.UnauthorizedException;
+import com.murat.userservice.payloads.ResponseDto;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,6 +38,13 @@ public class ApplicationExceptionHandler {
         errorMap.put("message", exception.getLocalizedMessage());
 
         return errorMap;
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ResponseDto> handleUnauthorizedException(UnauthorizedException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ResponseDto(HttpStatus.UNAUTHORIZED.value(), exception.getMessage()));
     }
 
     private String formattedMessage(String field, String message) {
