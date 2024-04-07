@@ -7,6 +7,7 @@ import com.murat.userservice.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,12 +19,13 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping("register")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseDto registerUser(@RequestBody @Valid UserReqDto userReqDto) {
         return userService.createUser(userReqDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<UserResDto> getUsers() {

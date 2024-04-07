@@ -1,7 +1,7 @@
 package com.murat.userservice.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.murat.userservice.payloads.LoginReqDto;
+import com.murat.userservice.entities.AccountDetails;
 import com.murat.userservice.payloads.ResponseDto;
 import com.murat.userservice.payloads.UserReqDto;
 import com.murat.userservice.payloads.UserResDto;
@@ -9,6 +9,9 @@ import com.murat.userservice.entities.User;
 import com.murat.userservice.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +20,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     ObjectMapper mapper = new ObjectMapper();
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -60,5 +63,11 @@ public class UserService {
     public ResponseDto deleteUser(long userId) {
         userRepository.deleteById(userId);
         return new ResponseDto(HttpStatus.OK.value(), "User successfully deleted");
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(username);
+        return new AccountDetails(user);
     }
 }
